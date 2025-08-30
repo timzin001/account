@@ -6,6 +6,7 @@ import * as Joi from 'joi';
 import * as path from 'path';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { ProductModule } from './module/product/product.module';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { ProductModule } from './module/product/product.module';
     }),
 
     ProductModule,
-    // ProductsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
