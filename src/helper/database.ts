@@ -4,8 +4,13 @@ import { FactoryProvider, Logger } from '@nestjs/common';
 import { CONNECTIONS_PROVIDER } from 'src/constants/tokens';
 import { Connection } from 'mongoose';
 
+export const getCurDabaseName = () => {
+  const endDate = new Date();
+  const endYear = endDate.getFullYear();
+  return `account_${endYear}`;
+};
+
 export const getDatabaseNames = () => {
-  /// Load data from
   const startDate = new Date('2024-01-01T00:00:00Z');
   const endDate = new Date();
   const startYear = startDate.getFullYear();
@@ -34,7 +39,7 @@ export const getConnections = () => {
   return result;
 };
 
-export const getConnectionProviders = () => {
+export const getConnProviders = () => {
   const databaseConnectionNames = getDatabaseNames();
   const connectionsProvider: FactoryProvider = {
     provide: CONNECTIONS_PROVIDER,

@@ -4,19 +4,16 @@ import { ProductController } from './product.controller';
 import { TENANT_CONNECTIONS } from 'src/constants/tokens';
 import { Connection } from 'mongoose';
 import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
-import { getConnections, getConnectionProviders } from 'src/helper/database';
+import { getConnections, getConnProviders } from 'src/helper/database';
+import { Auth, AuthSchema } from 'src/schema/auth.schema';
 
 @Module({
-  imports: [
-    // Import the dynamic modules for each year.
-    // This makes their named connections available for injection.
-    ...getConnections(),
-  ],
+  imports: [...getConnections()],
   controllers: [ProductController],
   providers: [
     ProductService,
     // tenantConnectionsProvider
-    getConnectionProviders(),
+    getConnProviders(),
   ],
 })
 export class ProductModule {}

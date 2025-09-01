@@ -56,13 +56,13 @@ export class AuthController {
     required: true,
     schema: { type: 'string', default: 'vi' },
   })
-  @UseGuards(AuthGuardLang)
+  // @UseGuards(AuthGuardLang)
   async postSignUp(
     @Res({ passthrough: true }) response: FastifyReply,
     @Req() request: FastifyRequest,
     @Body() params: CreateType,
   ): Promise<Result> {
-    return await this.authService.postSignUp(response, request, params);
+    return await this.authService.postSignUp(request, params);
   }
 
   // @HttpCode(HttpStatus.OK)

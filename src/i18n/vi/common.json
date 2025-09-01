@@ -1,8 +1,6 @@
 {
     "error_occur_please_try_again": "Có lỗi xảy ra, Vui lòng thử lại sau",
     "language_is_not_support":"Ngôn ngữ không được hỗ trợ",
-    "password_must_be_greater_than_8_characters":"Mật khẩu phải lớn hơn 8 ký tự",
-    "password_must_be_less_than_20_characters":"Mật khẩu phải nhỏ hơn 20 ký tự",
     "phone_number_only_contains_digits":"Số điện thoại chỉ chứa số",
     "phone_number_cannot_be_more_than_15_characters":"Số điện thoại không được nhiều hơn 15 ký tự",
     "this_phone_number_has_account_in_system":"Số điện thoại này đã có tài khoản trong hệ thống",
@@ -14,10 +12,6 @@
     "branch_is_not_exist_in_organization": "Chi nhánh không tồn tại trong tổ chức",
     "department_is_not_exist_in_organization": "Bô phận không tồn tại trong tổ chức",
     "at_least_one_manager": "Có ít nhất một người quản lý",
-    "password_must_have_a_lowercase_letter": "Mật khẩu phải có chữ thường",
-    "password_must_have_a_uppercase_letter": "Mật khẩu phải có chữ in hoa",
-    "password_must_have_a_number": "Mật khẩu phải có số",
-    "full_name_must_be_greater_than_6_characters": "Họ tên phải dài hơn 6 ký tự",
     "name_of_organization_must_be_greater_than_2_characters": "Tên của tổ chức phải dài hơn 2 ký tự",
     "size_of_organization_is_number": "Kích cỡ của tổ chức là số",
     "phone_number_of_branch_only_contains_digits": "Số điện thoại của chi nhánh chỉ chứa số",
@@ -61,6 +55,7 @@
     "nick_name": "Biệt danh",
     "old_password": "Mật khẩu củ",
     "new_password": "Mật khẩu mới",
+    "password": "Mật khẩu",
     "dial_code": "Mã quốc gia",
     "organization": "Tổ chức",
     "email":"Email",
@@ -79,5 +74,10 @@
     "employee": "Nhân viên",
     "name_is_already_in_use_by_anthor_organization": "{name} đã được dùng bởi tổ chức khác",
     "creator_of_the_organization": "Người tạo tổ chức",
-    "not_the_creator_of_the_organization": "Không phải là người tạo tổ chức"
+    "not_the_creator_of_the_organization": "Không phải là người tạo tổ chức",
+    "name1_must_be_greater_than_name2_characters":"{name1} phải lớn hơn {name2} ký tự",
+    "nam1_must_be_less_than_nam2_characters":"{name1} phải nhỏ hơn {name2} ký tự",
+    "name_must_have_a_lowercase_letter": "{name} phải có chữ thường",
+    "name_must_have_a_uppercase_letter": "{name} phải có chữ in hoa",
+    "name_must_have_a_number": "{name} phải có số"
 }

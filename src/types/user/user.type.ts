@@ -29,3 +29,10 @@ export class CreateType {
   })
   dateOfBirth: string;
 }
+
+export const ResultCreateType = (data: any) => {
+  const resAuth = data.auth.token;
+  const user = data.user;
+  const resOrgs: any = [];
+  return { auth: resAuth, user: user, orgs: resOrgs };
+};

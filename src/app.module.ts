@@ -7,6 +7,8 @@ import * as path from 'path';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { ProductModule } from './module/product/product.module';
 import { AuthModule } from './module/auth/auth.module';
+import { getConnections } from './helper/database';
+import { UserModule } from './module/user/user.module';
 
 @Module({
   imports: [
@@ -30,9 +32,11 @@ import { AuthModule } from './module/auth/auth.module';
         AcceptLanguageResolver,
       ],
     }),
+    // ...getConnections(),
 
     ProductModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

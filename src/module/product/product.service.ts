@@ -4,10 +4,11 @@
 // export class ProductService {}
 
 import { Injectable, Inject, Scope, Logger } from '@nestjs/common';
-import { Connection, Model } from 'mongoose';
+import { ClientSession, Connection, Model } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './product.schema';
 import { CONNECTIONS_PROVIDER, TENANT_CONNECTIONS } from 'src/constants/tokens';
+import { Auth } from 'src/schema/auth.schema';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProductService {
@@ -34,6 +35,15 @@ export class ProductService {
   }
 
   async create(productData: any): Promise<any[]> {
+    // let mapSession: Map<string, ClientSession> = new Map();
+    // for (const [key, value] of this.connections) {
+    //   const session = await value.startSession();
+    //   mapSession.set(key, session);
+    //   session.startTransaction();
+    // }
+
+    let auth = {};
+
     let request = [];
     for (const [key, value] of this.mapModel) {
       const newProduct = new value(productData);
