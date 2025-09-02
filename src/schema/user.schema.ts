@@ -7,9 +7,11 @@ import { I18nBool } from './common/i18nbool.schema';
 
 @Schema()
 export class User {
+  @Prop({ required: true })
+  dbName: string;
   @Prop({ required: true, default: '' })
   code: string;
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   phoneNumber: string;
   @Prop({ required: true })
   fullName: I18nString;
@@ -37,7 +39,7 @@ export class User {
   })
   orgs: string[];
 
-  @Prop({ default: true })
+  @Prop({ default: true, index: true })
   active: I18nBool;
 
   @Prop({ required: true })

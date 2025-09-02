@@ -3,6 +3,8 @@ import mongoose, { now } from 'mongoose';
 import { User } from './user.schema';
 @Schema()
 export class Auth {
+  @Prop({ required: true })
+  dbName: string;
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
