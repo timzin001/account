@@ -32,8 +32,6 @@ import { UserModule } from './module/user/user.module';
         AcceptLanguageResolver,
       ],
     }),
-    // ...getConnections(),
-
     ProductModule,
     AuthModule,
     UserModule,

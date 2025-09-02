@@ -1,14 +1,7 @@
-// import { Injectable } from '@nestjs/common';
-
-// @Injectable()
-// export class ProductService {}
-
 import { Injectable, Inject, Scope, Logger } from '@nestjs/common';
-import { ClientSession, Connection, Model } from 'mongoose';
-import { InjectConnection } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { Product, ProductSchema } from './product.schema';
-import { CONNECTIONS_PROVIDER, TENANT_CONNECTIONS } from 'src/constants/tokens';
-import { Auth } from 'src/schema/auth.schema';
+import { CONNECTIONS_PROVIDER } from 'src/helper/constants';
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProductService {

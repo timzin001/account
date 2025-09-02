@@ -1,8 +1,8 @@
 import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FactoryProvider, Logger } from '@nestjs/common';
-import { CONNECTIONS_PROVIDER } from 'src/constants/tokens';
 import { Connection } from 'mongoose';
+import { CONNECTIONS_PROVIDER } from './constants';
 
 export const getCurDabaseName = () => {
   const endDate = new Date();

@@ -1,13 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { Connection, Model } from 'mongoose';
-import { CONNECTIONS_PROVIDER } from 'src/constants/tokens';
-import { getCurDabaseName, getDabaseName } from 'src/helper/database';
+import { getCurDabaseName } from 'src/helper/database';
 import { User, UserSchema } from 'src/schema/user.schema';
 import * as bcrypt from 'bcrypt';
 import { getSuccess } from 'src/helper/helper';
 import { createUser } from 'src/dump/users';
 import { Result } from 'src/types/common/result.type';
+import { CONNECTIONS_PROVIDER } from 'src/helper/constants';
 
 @Injectable()
 export class UserService {
