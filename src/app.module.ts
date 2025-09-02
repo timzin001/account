@@ -5,9 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import * as path from 'path';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
-import { ProductModule } from './module/product/product.module';
 import { AuthModule } from './module/auth/auth.module';
-import { getConnections } from './helper/database';
 import { UserModule } from './module/user/user.module';
 
 @Module({
@@ -32,7 +30,6 @@ import { UserModule } from './module/user/user.module';
         AcceptLanguageResolver,
       ],
     }),
-    ProductModule,
     AuthModule,
     UserModule,
   ],
