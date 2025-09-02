@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateType {
+export class SignUpType {
   @ApiProperty({
     description: 'phoneNumber',
     example: '1234567890',
@@ -28,6 +28,19 @@ export class CreateType {
     example: '2000-10-10',
   })
   dateOfBirth: string;
+}
+
+export class SignInType {
+  @ApiProperty({
+    description: 'Country number',
+    example: '(+84)123456789',
+  })
+  phoneNumber: string;
+  @ApiProperty({
+    description: 'password',
+    example: '123456aA@',
+  })
+  password: string;
 }
 
 export const ResultCreateType = (data: any) => {

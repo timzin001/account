@@ -1,8 +1,6 @@
 {
     "error_occur_please_try_again": "Error occur, please try again",
     "language_is_not_support":"Language is not support",
-    "phone_number_only_contains_digits":"Phone number only contain digits",
-    "phone_number_cannot_be_more_than_15_characters":"Phone number cannot be more than 15 characters",
     "this_phone_number_has_account_in_system":"This phone number has account in system",
     "cannot_find_account_in_the_system":"Cannot find acocunt in the system",
     "you_dont_have_permission_to_access_data":"You don't have permission to access data",
@@ -87,5 +85,7 @@
     "nam1_must_be_less_than_nam2_characters":"{name1} must be less than {name2} characters",
     "name_must_have_a_lowercase_letter": "{name} must have a lowercase letter",
     "name_must_have_a_uppercase_letter": "{name} must have a uppercase letter",
-    "name_must_have_a_number": "{name} must have a number"
+    "name_must_have_a_number": "{name} must have a number",
+    "name_only_contains_digits":"{name} only contain digits",
+     "name1_cannot_be_more_than_name2_characters":"{name1} cannot be more than {name2} characters"
 }

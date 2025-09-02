@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { Connection, Model, now } from 'mongoose';
+import { ClientSession, Connection, Model, now } from 'mongoose';
 import { CONNECTIONS_PROVIDER } from 'src/constants/tokens';
 import { ACCEPT_TYPE } from 'src/helper/constants';
-import { getCurDabaseName } from 'src/helper/database';
+import { getCurDabaseName, getDabaseName } from 'src/helper/database';
 import {
   createToken,
   getCacheError,
@@ -14,7 +14,11 @@ import {
   validatePhoneNumber,
 } from 'src/helper/helper';
 import { Result } from 'src/types/common/result.type';
-import { CreateType, ResultCreateType } from 'src/types/user/user.type';
+import {
+  SignUpType,
+  ResultCreateType,
+  SignInType,
+} from 'src/types/user/user.type';
 import * as bcrypt from 'bcrypt';
 import { createI18nDate } from 'src/helper/i18ndate';
 import { createI18nStringGender } from 'src/helper/i18nstring';
@@ -61,10 +65,31 @@ export class AuthService {
     return total;
   }
 
-  async getUser(phoneNumber: String) {
+  async findOneAuth(obj) {
+    let listRequest = [];
+    for (const [key, value] of this.mapAuthModel) {
+      let find = value.findOne(obj);
+      let request = find.exec();
+      listRequest.push(request);
+    }
+
+    const listResult = await Promise.all(listRequest);
+    let filter = listResult.filter((item) => {
+      if (item) {
+        return true;
+      }
+      return false;
+    });
+    if (!filter.length) {
+      return;
+    }
+    return filter[0];
+  }
+
+  async findOneUser(obj: any) {
     let listRequest = [];
     for (const [key, value] of this.mapUserModel) {
-      let find = value.findOne({ phoneNumber: phoneNumber });
+      let find = value.findOne(obj);
       let request = find.exec();
       listRequest.push(request);
     }
@@ -84,7 +109,7 @@ export class AuthService {
 
   async postSignUp(
     request: FastifyRequest,
-    params: CreateType,
+    params: SignUpType,
   ): Promise<Result> {
     const startTime = new Date().getTime();
     const currDatabaseName = getCurDabaseName();
@@ -177,7 +202,7 @@ export class AuthService {
    * @param param
    * @returns
    */
-  async validateSignUp(param: CreateType): Promise<string[]> {
+  async validateSignUp(param: SignUpType): Promise<string[]> {
     let result: string[] = [];
 
     /// Phone number
@@ -194,7 +219,11 @@ export class AuthService {
     if (param.phoneNumber) {
       let valphoneNumber = validatePhoneNumber(param.phoneNumber);
       if (valphoneNumber == 1) {
-        result.push(getText('phone_number_only_contains_digits'));
+        result.push(
+          getText('name_only_contains_digits', {
+            name: getText('phone_number'),
+          }),
+        );
       } else if (valphoneNumber === 2) {
         result.push(
           getText('name_is_not_correct_format', {
@@ -205,7 +234,7 @@ export class AuthService {
     }
 
     // /// Check phone number in database
-    const resUser = await this.getUser(param.phoneNumber);
+    const resUser = await this.findOneUser({ phoneNumber: param.phoneNumber });
 
     if (resUser) {
       result.push(getText('this_phone_number_has_account_in_system'));
@@ -310,5 +339,189 @@ export class AuthService {
     }
 
     return result;
+  }
+
+  /**
+   * Sign in
+   * @param response
+   * @param request
+   * @param params
+   * @returns
+   */
+  async postSignIn(
+    response: FastifyReply,
+    request: FastifyRequest,
+    params: SignInType,
+  ): Promise<Result> {
+    const startTime = new Date().getTime();
+    let session;
+    try {
+      // Get type: ios, android, web;
+      const headers = request.headers;
+      const type = headers['accept-type'] as string;
+      // Get user phone
+      // Phone (+84)974318066
+      let user = await this.findOneUser({
+        phoneNumber: params.phoneNumber,
+        'active.value': true,
+      });
+
+      // Validate
+      const errors = await this.validateSignIn(params, user, type);
+      if (!errors || errors.length) {
+        throw getThrowError(errors);
+      }
+
+      const dbName = getDabaseName(user.createdAt.value);
+      const connect = this.connections.get(dbName);
+      session = await connect.startSession();
+      session.startTransaction();
+
+      const auth = await this.getInfoPersonal(dbName, type, user, session);
+      await session.commitTransaction();
+      session.endSession();
+      const result = {
+        auth: auth,
+        user: user,
+      };
+      const endTime = new Date().getTime();
+      Logger.log(`Auth postSignIn: ${endTime - startTime}`);
+      return getSuccess(result);
+    } catch (e) {
+      if (session) {
+        await session.abortTransaction();
+        session.endSession();
+      }
+      Logger.log('Error: Auth postSignIn');
+      throw getCacheError(e);
+    }
+  }
+
+  /**
+   * Validate sign in
+   * @param param
+   * @returns
+   */
+  async validateSignIn(
+    param: SignInType,
+    foundUser: any,
+    type: string,
+  ): Promise<string[]> {
+    let result: string[] = [];
+
+    if (!type || !ACCEPT_TYPE.includes(type)) {
+      result.push(getText('cannot_get_type_of_application_access_the_system'));
+    }
+
+    if (!param.phoneNumber) {
+      result.push(
+        getText('please_enter_name', {
+          name: getText('phone_number').toLocaleLowerCase(),
+        }),
+      );
+    }
+    if (param.phoneNumber) {
+      let arr = param.phoneNumber.split(')');
+      const realVal = arr[1];
+
+      const number = Number(realVal);
+      if (!Number.isInteger(number)) {
+        result.push(
+          getText('name_only_contains_digits', {
+            name: getText('phone_number'),
+          }),
+        );
+      }
+
+      if (realVal.length < 6) {
+        result.push(
+          getText('name1_must_be_greater_than_or_equal_name2_characters', {
+            name1: getText('phone_number'),
+            name2: 6,
+          }),
+        );
+      }
+      if (realVal.length > 15) {
+        result.push(
+          getText('name1_cannot_be_more_than_name2_characters', {
+            name1: getText('phone_number'),
+            name2: 6,
+          }),
+        );
+      }
+    }
+
+    if (!param.password) {
+      result.push(
+        getText('please_enter_name', {
+          name: getText('password').toLocaleLowerCase(),
+        }),
+      );
+    }
+    if (param.password && param.password.length < 8) {
+      result.push(
+        getText('name1_must_be_greater_than_name2_characters', {
+          name1: getText('password'),
+          name2: 8,
+        }),
+      );
+    }
+
+    if (!foundUser) {
+      result.push(
+        getText('name_is_not_exist_in_system', { name: getText('account') }),
+      );
+    }
+
+    if (foundUser) {
+      const isMatch = await bcrypt.compare(param.password, foundUser.password);
+      if (!isMatch) {
+        result.push(
+          getText('name_is_not_correct', { name: getText('password') }),
+        );
+      }
+    }
+
+    return result;
+  }
+
+  async getInfoPersonal(
+    dbName: string,
+    type: string,
+    user: any,
+    session: ClientSession,
+  ): Promise<any> {
+    // Get user auth
+    let findUserAuth: any = await this.findOneAuth({
+      user: user,
+      type: type,
+    });
+
+    const authModel = this.mapAuthModel.get(dbName);
+
+    // Create token
+    const token = createToken(this.jwtService, `${user._id}`);
+    if (!findUserAuth) {
+      const data = {
+        type: type,
+        user: user,
+        token: token,
+        createdAt: now(),
+        updatedAt: now(),
+      };
+
+      const newAuth = new authModel(data);
+      const auth = await newAuth.save({ session });
+      return auth;
+    }
+    const auth = await authModel.updateOne(
+      { _id: findUserAuth._id },
+      { $set: { token: token, updatedAt: now() } },
+    );
+
+    findUserAuth.token = token;
+    findUserAuth.updatedAt = now();
+
+    return findUserAuth;
   }
 }
